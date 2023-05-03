@@ -47,6 +47,11 @@ app.post('/api/notes', (req, res) => {
   
 const newNote = req.body
 
+const newNoteId = Math.random().toString(36);
+  
+// Add the ID to the newNote object
+newNote.id = newNoteId;
+
   dataD.push(newNote);
 const noteString = JSON.stringify(dataD)
     // Write the string to a file
