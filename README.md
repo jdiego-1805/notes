@@ -14,4 +14,4 @@ https://young-crag-47268.herokuapp.com/notes
 
 # Usage
 
-![Alt text](../../OneDrive/Pictures/notespart1.png) ![Alt text](../../OneDrive/Pictures/notespart2.png)
+![Alt text](public/assets/css/notespart1.png)![Alt text](public/assets/css/notespart2.png)
