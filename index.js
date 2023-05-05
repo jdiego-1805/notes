@@ -1,7 +1,9 @@
 const express = require('express');
 const path = require('path');
 const dataD = require("./db/db.json")
-const { writeFile } = require("fs")
+const { writeFile } = require("fs");
+const { error } = require('console');
+const uuid = require('./public/assets/js/uuid')
 
 const PORT = process.env.PORT || 3001;
 
@@ -44,36 +46,43 @@ app.get('/api/notes/:note_id', (req, res) => {
 
 // POST request for notes
 app.post('/api/notes', (req, res) => {
-  
-const newNote = req.body
 
-const newNoteId = Math.random().toString(36);
-  
-// Add the ID to the newNote object
-newNote.id = newNoteId;
+  const newNote = req.body
+const noteD = uuid()
+newNote.id = noteD
+  // Add the ID to the newNote object
 
   dataD.push(newNote);
-const noteString = JSON.stringify(dataD)
-    // Write the string to a file
-    writeFile(path.join(__dirname, `./db/db.json`), noteString, (err) =>
-      err
-        ? console.error(err)
-        : console.log(
-            `Note for ${newNote.product} has been written to JSON file`
-          )
-    );
+  const noteString = JSON.stringify(dataD)
+  // Write the string to a file
+  writeFile(path.join(__dirname, `./db/db.json`), noteString, (err) =>
+    err
+      ? console.error(err)
+      : console.log(
+        `Note for ${newNote.product} has been written to JSON file`
+      )
+  );
 
   res.status(200).json(dataD);
 });
 
 // DELETE request for notes
-app.delete('/api/notes', (req, res) => {
-  
-  
+app.delete('/api/notes/:id', (req, res) => {
+  const id = (req.params.id);
+  const notesIn = dataD.findIndex(dataD => dataD.id == id);
+  dataD.splice(notesIn, 1);
+  const string = JSON.stringify(dataD)
 
-  
-  res.status(200).json(dataD);
+  writeFile(path.join(__dirname, `./db/db.json`), string, (err) => {
+    if (err) {
+      console.error(err);
+      return res.status(500).send('Error writing to file');
+    }
+
+    return res.send();
+  });
 });
+
 
 
 app.listen(PORT, () =>
